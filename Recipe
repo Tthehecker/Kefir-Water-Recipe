@@ -1,0 +1,2418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water Kefir Flavor Recipe Builder</title>
+<style>
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --ink: #172033;
+  --muted: #5d687b;
+  --line: #dce2ec;
+  --accent: #2463eb;
+  --accent-hover: #1d4ed8;
+  --accent2: #eaf0ff;
+  --accent2-ink: #1647aa;
+  --warn-bg: #fffbeb;
+  --warn-border: #fde68a;
+  --warn-ink: #92400e;
+  --tip-bg: #f0fdf4;
+  --tip-border: #bbf7d0;
+  --tip-ink: #166534;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.page-title {
+  font-size: clamp(1.6rem, 3.8vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 18px rgba(20, 33, 61, 0.04);
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 750;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 18px 0 8px;
+  color: #1e293b;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+label {
+  display: block;
+  font-weight: 650;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #334155;
+}
+
+select, input[type="text"] {
+  font: inherit;
+  font-size: 0.96rem;
+  border: 1px solid #bfc9da;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  width: 100%;
+  background: #ffffff;
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+select:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(36, 99, 235, 0.15);
+}
+
+button {
+  font: inherit;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 9px 15px;
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--accent2);
+  color: var(--accent2-ink);
+}
+
+.btn-secondary:hover {
+  background: #dbe7ff;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.recipe-header-block {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.recipe-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  display: inline-block;
+  background: var(--accent2);
+  color: var(--accent2-ink);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tag-speed {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Ingredients display (read-only fixed cards) */
+.ingredients {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 14px 0 16px;
+}
+
+.ingredient {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  background: #fafbfc;
+}
+
+.ingredient-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.amount-display {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 4px 0 2px;
+}
+
+.amount-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.unit {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.approx {
+  font-size: 0.84rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.prep-note {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.yield-box {
+  background: var(--tip-bg);
+  border: 1px solid var(--tip-border);
+  color: var(--tip-ink);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin: 14px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.note {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-ink);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.tip-box {
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  color: #115e59;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin: 14px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+ol, ul {
+  padding-left: 24px;
+  margin: 14px 0;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+/* Flavor Directory Grid */
+.flavor-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.flavor-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flavor-item:hover {
+  border-color: var(--accent);
+  background: #f8fbff;
+  transform: translateY(-1px);
+}
+
+.flavor-item.active {
+  border: 2px solid var(--accent);
+  background: var(--accent2);
+}
+
+.flavor-num {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.flavor-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 2px 0 4px;
+}
+
+.flavor-item.active .flavor-name {
+  color: var(--accent2-ink);
+}
+
+.flavor-ings {
+  font-size: 0.81rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 16px 16px 36px;
+  line-height: 1.6;
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .card {
+    box-shadow: none;
+    border: 1px solid #aaa;
+    break-inside: avoid;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 8px 0;
+    max-width: 100%;
+  }
+  .ingredient {
+    border: 1px solid #ccc;
+    background: #fff;
+    break-inside: avoid;
+  }
+  #flavorListSection {
+    display: none !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<main>
+  <!-- Card 1: Choose a Recipe -->
+  <section class="card no-print">
+    <h1 class="page-title">Water Kefir Flavor Recipe Builder</h1>
+    <p class="page-subtitle">
+      Select any of the 60 recipes below. The fermentation jar (3 cups) and bottle size (16 oz) stay fixed. Each recipe has its own separate, pre-calibrated ingredient amounts and step-by-step instructions.
+    </p>
+
+    <div class="grid">
+      <div>
+        <label for="recipeSelect">Recipe (60 options)</label>
+        <select id="recipeSelect"></select>
+      </div>
+      <div>
+        <label for="recipeSearch">Find a recipe</label>
+        <input id="recipeSearch" type="text" placeholder="Type strawberry, ginger, citrus, apple…">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-secondary" id="prevBtn">Previous recipe</button>
+      <button class="btn-secondary" id="nextBtn">Next recipe</button>
+      <button class="btn-secondary" id="randomBtn">Surprise me</button>
+      <button class="btn-primary" onclick="window.print()">Print recipe</button>
+      <span class="muted" style="margin-left: auto; font-size: 0.88rem;" id="recipeCounter">Showing recipe 1 of 60</span>
+    </div>
+  </section>
+
+  <!-- Card 2: Part 1 — First Fermentation -->
+  <section class="card">
+    <h2>Part 1 — First fermentation (plain water kefir)</h2>
+    <p class="muted">Equipment: 3-cup glass mason jar and plastic or nylon mesh strainer.</p>
+
+    <div class="ingredients">
+      <div class="ingredient">
+        <div class="ingredient-label">Filtered or spring water</div>
+        <div class="amount-display">
+          <span class="amount-val">600</span>
+          <span class="unit">g</span>
+        </div>
+        <div class="approx">About 2.5 cups</div>
+        <div class="prep-note">Room-temperature, non-chlorinated water. Fixed jar size remains 3 cups.</div>
+      </div>
+
+      <div class="ingredient">
+        <div class="ingredient-label">Fermentation sugar</div>
+        <div class="amount-display">
+          <span class="amount-val">33</span>
+          <span class="unit">g</span>
+        </div>
+        <div class="approx">About 2.5 tbsp (30 to 35 g)</div>
+        <div class="prep-note">Demerara, organic cane, or turbinado sugar.</div>
+      </div>
+
+      <div class="ingredient">
+        <div class="ingredient-label">Active water kefir grains</div>
+        <div class="amount-display">
+          <span class="amount-val">30–40</span>
+          <span class="unit">g</span>
+        </div>
+        <div class="approx">About 2 to 2.5 tablespoons</div>
+        <div class="prep-note">Healthy, plump rehydrated grains.</div>
+      </div>
+    </div>
+
+    <div class="yield-box">
+      <strong>Yield note:</strong> This 600 g first-fermentation batch yields enough strained plain water kefir for exactly <strong>two 16-oz bottles (~300 g each)</strong>. The amounts in Part 2 below are listed per individual 16-oz bottle.
+    </div>
+
+    <ol>
+      <li><strong>Dissolve the sugar:</strong> Dissolve 33 g (about 2.5 tbsp) sugar in a small amount of warm water in the 3-cup jar. Add the remaining water and let it cool completely to room temperature. Never add grains to warm water.</li>
+      <li><strong>Add the grains:</strong> Add your rehydrated water kefir grains to the clean 3-cup jar and pour in the cooled sugar water. Leave about 0.5 cups of headspace at the top.</li>
+      <li><strong>Cover loosely:</strong> Cover the jar loosely with a coffee filter, paper towel, or breathable cloth secured with a rubber band.</li>
+      <li><strong>Primary ferment:</strong> Let it ferment out of direct sunlight at room temperature (68–78 deg F) for about 24 to 48 hours. It is ready when mildly sweet and slightly tangy.</li>
+    </ol>
+  </section>
+
+  <!-- Card 3: Part 2 — Second Fermentation -->
+  <section class="card" id="part2Section">
+    <h2>Part 2 — Second fermentation (flavor and carbonation)</h2>
+    <p class="muted">Equipment: pressure-rated 16 oz (1-pint) swing-top bottles and a kitchen scale. Amounts below are the exact fixed amounts for each 16 oz bottle; about 300 g plain water kefir is the liquid amount.</p>
+
+    <div class="recipe-header-block">
+      <div class="tag-row">
+        <span class="tag" id="recipeCatTag">Strawberry & Berry Flavors</span>
+        <span class="tag tag-speed" id="recipeSpeedTag">Fast carbonation</span>
+      </div>
+      <h3 class="recipe-title" id="recipeTitle">Strawberry Lemonade Water Kefir</h3>
+      <p class="muted" id="recipeDesc">A bright sweet-tart classic.</p>
+    </div>
+
+    <h3>Exact flavor ingredients per 16 oz bottle:</h3>
+    <div class="ingredients" id="flavorIngredients"></div>
+
+    <div class="ingredient" style="margin-bottom: 14px;">
+      <div class="ingredient-label">Strained plain water kefir (from Part 1)</div>
+      <div class="amount-display">
+        <span class="amount-val">300</span>
+        <span class="unit">g</span>
+      </div>
+      <div class="approx">About 1.25 cups (~300 grams per 16 oz bottle)</div>
+      <div class="prep-note">Keep 1 to 2 inches of headspace at the top of the bottle; do not fill to the brim.</div>
+    </div>
+
+    <h3>How to do it:</h3>
+    <ol id="recipeSteps"></ol>
+
+    <div class="tip-box" id="recipeTipBox">
+      <strong>Flavor tip:</strong> <span id="recipeTipText"></span>
+    </div>
+
+    <div class="note">
+      <strong>Pressure safety:</strong> Fermenting fruit sugars, juices, and residual sugar build carbonation quickly. Use only bottles specifically rated for pressure and carbonation, inspect them for cracks, leave 1 to 2 inches of headspace, check them daily, and refrigerate thoroughly before opening. Burping vents excess pressure but does not guarantee against over-pressurization. Refrigeration slows fermentation down significantly. Always open chilled bottles carefully, directed away from your face.
+    </div>
+  </section>
+
+  <!-- Card 4: Part 3 — Keep the Cycle Going -->
+  <section class="card">
+    <h2>Part 3 — Keep the cycle going</h2>
+    <p class="muted">Water kefir grains are reusable indefinitely if fed regularly. You do not need to rehydrate them again.</p>
+    <ul>
+      <li><strong>Continuous brewing cycle:</strong> As soon as your first fermentation finishes, strain out the grains with your plastic or nylon mesh strainer and place them right back into a 3-cup mason jar filled with fresh room-temperature sugar water (600 g water + 33 g sugar). Repeat every 24 to 48 hours (about every 2 days).</li>
+      <li><strong>Taking a short break (up to 3 weeks):</strong> Place the grains in a 3-cup jar with fresh sugar water, secure with a solid airtight lid (instead of a cloth), and store them in the refrigerator. When you are ready to brew again, strain them out and start a fresh batch at room temperature.</li>
+      <li><strong>Cleanliness and grain health:</strong> Use clean non-reactive equipment, avoid metal contact with grains, and discard a batch if you ever see colorful fuzzy mold or notice an unusual rotten smell.</li>
+    </ul>
+  </section>
+
+  <!-- Card 5: Flavor Directory Included -->
+  <section class="card" id="flavorListSection">
+    <h2>Flavor ideas included</h2>
+    <p class="muted">Click any flavor below to load its exact ingredients and step-by-step instructions above.</p>
+    <div class="flavor-list-grid" id="flavorListGrid"></div>
+  </section>
+</main>
+
+<footer>
+  Homemade water kefir recipe helper &middot; Fixed 3-cup first-fermentation jar &middot; Fixed 16 oz flavor bottle &middot; 60 pre-calibrated flavor formulations
+</footer>
+
+<script>
+const recipes = [
+  {
+    "num": 1,
+    "name": "Strawberry Lemonade",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "A bright, zesty sweet-tart classic with vibrant pink color and refreshing citrus punch.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast (high natural fruit sugars)",
+    "taste_notes": "Sweet, tart, effervescent, crisp",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1\u20132 medium berries",
+        "prep": "Hulled and finely diced or gently mashed"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed and strained"
+      }
+    ],
+    "prep_tip": "Lightly mash the strawberries with the lemon juice before bottling so juices extract rapidly into the kefir liquid."
+  },
+  {
+    "num": 2,
+    "name": "Strawberry Kiwi",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Sweet, fragrant berries balanced by tart, tropical green kiwi notes for a balanced summer soda.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Fruity, tangy, vibrant, juicy",
+    "ingredients": [
+      {
+        "name": "Fresh strawberries",
+        "amount": 18,
+        "unit": "g",
+        "approx": "approx. 1 large berry",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Ripe kiwi",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 2 thin peeled slices",
+        "prep": "Peeled and finely diced"
+      }
+    ],
+    "prep_tip": "Use ripe, soft kiwi. Dice both fruits finely to maximize surface contact and speed infusion."
+  },
+  {
+    "num": 3,
+    "name": "Strawberry Vanilla",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Dessert-like berry profile with warm, creamy vanilla aromatics reminiscent of strawberry and cream.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Creamy berry, smooth, mellow, aromatic",
+    "ingredients": [
+      {
+        "name": "Fresh strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 medium berries",
+        "prep": "Mashed or finely chopped"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp or 15\u201320 drops",
+        "prep": "Pure vanilla extract (or scraped vanilla bean)"
+      }
+    ],
+    "prep_tip": "Add vanilla directly into the bottle with the mashed strawberries before pouring plain kefir."
+  },
+  {
+    "num": 4,
+    "name": "Raspberry Lime",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Intensely tart, crisp, and vibrant red with an invigorating lime citrus backbone.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Very Fast (raspberries ferment quickly)",
+    "taste_notes": "Sharp, punchy, tart-sweet, electric",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen raspberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 6\u20138 berries",
+        "prep": "Lightly crushed with a fork"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Raspberries carbonate rapidly! Inspect and burp at 24 hours to prevent over-pressurization."
+  },
+  {
+    "num": 5,
+    "name": "Blueberry Lemon",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Deep indigo hue, mellow berry sweetness, and a bright lemon lift that keeps it refreshing.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Earthy berry, citrus zing, balanced",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen blueberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 15\u201318 berries",
+        "prep": "Crushed or pierced to break skins"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Always break blueberry skins before adding to allow internal juices and deep color to leach into the kefir."
+  },
+  {
+    "num": 6,
+    "name": "Blackberry Vanilla",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Rich dark forest-berry complexity rounded with smooth, warm vanilla sweetness.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Deep, rich, winey berry with sweet vanilla finish",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen blackberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4\u20135 plump berries",
+        "prep": "Gently crushed"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure Madagascar vanilla extract"
+      }
+    ],
+    "prep_tip": "Crush blackberries gently to release juices while keeping seeds intact for easy straining upon serving."
+  },
+  {
+    "num": 7,
+    "name": "Mixed Berry",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "A vibrant berry medley of strawberry, raspberry, and blueberry with a squeeze of lemon.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Full-bodied berry complexity, tart-sweet",
+    "ingredients": [
+      {
+        "name": "Strawberries",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 1 medium berry",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Raspberries",
+        "amount": 8,
+        "unit": "g",
+        "approx": "approx. 3\u20134 berries",
+        "prep": "Crushed"
+      },
+      {
+        "name": "Blueberries",
+        "amount": 7,
+        "unit": "g",
+        "approx": "approx. 6 berries",
+        "prep": "Crushed"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 5,
+        "unit": "g",
+        "approx": "approx. 1 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Muddle the trio of berries together with lemon juice in a small cup before funneling into the bottle."
+  },
+  {
+    "num": 8,
+    "name": "Raspberry Peach",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Velvety stone fruit sweetness brightened by the tart kick of fresh raspberries.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Juicy peach, tangy raspberry, floral",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen raspberries",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 5\u20136 berries",
+        "prep": "Lightly crushed"
+      },
+      {
+        "name": "Ripe peach",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Peeled and finely diced"
+      }
+    ],
+    "prep_tip": "Use fragrant ripe peach. If using frozen peaches, thaw completely and save any released nectar."
+  },
+  {
+    "num": 9,
+    "name": "Strawberry Watermelon",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "The ultimate light, ultra-hydrating summer quencher with crisp melon tones and berry sweetness.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Ultra-crisp, light, cooling, fruity",
+    "ingredients": [
+      {
+        "name": "Fresh strawberries",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 large berry",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Fresh watermelon flesh or juice",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "Seedless flesh, finely crushed"
+      }
+    ],
+    "prep_tip": "Watermelon juices readily and produces exuberant fizz; ensure at least 2 inches of bottle headspace."
+  },
+  {
+    "num": 10,
+    "name": "Cherry Limeade",
+    "category": "Strawberry & Berry Flavors",
+    "cat_id": "berry",
+    "desc": "Nostalgic drive-in soda style with deep stone fruit richness and a crisp lime tang.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Deep cherry, tart lime, sparkling soda profile",
+    "ingredients": [
+      {
+        "name": "Sweet dark cherries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 3\u20134 cherries",
+        "prep": "Pitted and finely diced or muddled"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Sweet dark cherries (Bing or black cherries) produce stunning deep ruby hue and authentic soda flavor."
+  },
+  {
+    "num": 11,
+    "name": "Orange Creamsicle",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Sweet, sunny orange juice paired with warm vanilla for a nostalgic ice cream bar taste.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Creamy citrus, sweet orange, smooth vanilla",
+    "ingredients": [
+      {
+        "name": "Fresh orange juice",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "Freshly squeezed, pulp optional"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "Fresh Valencia or Navel orange juice works best. Avoid pasteurized juices with added preservatives."
+  },
+  {
+    "num": 12,
+    "name": "Pineapple Coconut",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "A breezy tropical pi\u00f1a colada-inspired refresher with luscious pineapple and smooth coconut water.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Tropical, sweet pineapple, subtle coconut finish",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen pineapple",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced or crushed"
+      },
+      {
+        "name": "Pure coconut water",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "100% pure unsweetened coconut water"
+      }
+    ],
+    "prep_tip": "Use clear coconut water, not coconut milk or canned coconut cream (oils can coat and ruin kefir bottles)."
+  },
+  {
+    "num": 13,
+    "name": "Mango Passion Fruit",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Exotic tropical paradise blend with rich mango velvet and the fragrant electric tartness of passion fruit.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Intensely aromatic, tropical sweet-tart, exotic",
+    "ingredients": [
+      {
+        "name": "Ripe mango",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Peeled and finely diced or pureed"
+      },
+      {
+        "name": "Passion fruit juice or pulp",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 tbsp",
+        "prep": "100% pure pulp or juice"
+      }
+    ],
+    "prep_tip": "Passion fruit is very aromatic and high in acidity; it accelerates carbonation and produces great aroma."
+  },
+  {
+    "num": 14,
+    "name": "Pineapple Lime",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Bright, sweet tropical pineapple cut with sharp lime for a super-crisp, thirst-quenching fizz.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Sweet pineapple upfront, tangy lime finish",
+    "ingredients": [
+      {
+        "name": "Fresh pineapple",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced or lightly mashed"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Fresh pineapple enzymes naturally accelerate fermentation. Monitor carbonation levels starting at 24 hours."
+  },
+  {
+    "num": 15,
+    "name": "Mango Orange",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Smooth, golden sunburst blend uniting creamy mango with bright citrus sweetness.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Velvety, citrusy, sweet, tropical",
+    "ingredients": [
+      {
+        "name": "Ripe mango",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced or pureed"
+      },
+      {
+        "name": "Fresh orange juice",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Pureeing the mango into the orange juice creates a homogenous liquid that infuses smoothly throughout the bottle."
+  },
+  {
+    "num": 16,
+    "name": "Peach Pineapple",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Soft, fragrant stone fruit meets lively tropical pineapple for a layered, juicy fruit profile.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Floral peach, tart tropical pineapple, honeyed",
+    "ingredients": [
+      {
+        "name": "Ripe peach",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Peeled and finely diced"
+      },
+      {
+        "name": "Fresh pineapple",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced"
+      }
+    ],
+    "prep_tip": "Finely mince both fruits so that sugar and aroma diffuse thoroughly into the kefir liquid."
+  },
+  {
+    "num": 17,
+    "name": "Grapefruit Rosemary",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Sophisticated botanical mocktail with bittersweet pink grapefruit and resinous rosemary aromatics.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Bittersweet, botanical, woody herbal, dry crisp finish",
+    "ingredients": [
+      {
+        "name": "Pink or ruby grapefruit juice",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp",
+        "prep": "Freshly squeezed and strained"
+      },
+      {
+        "name": "Fresh rosemary sprig",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1 small 2-inch sprig",
+        "prep": "Lightly bruised between fingers"
+      }
+    ],
+    "prep_tip": "Do not chop the rosemary finely; simply bruise the sprig whole so it can be easily removed when serving."
+  },
+  {
+    "num": 18,
+    "name": "Lemon Ginger",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "The definitive digestive tonic: sharp lemon zestiness backed by fiery, warming fresh ginger root.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Zesty, warming, spicy kick, crisp clean finish",
+    "ingredients": [
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Fresh ginger root",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp grated",
+        "prep": "Peeled and finely grated with a microplane"
+      }
+    ],
+    "prep_tip": "Finely grated ginger releases maximum gingerol warmth. Adjust ginger by 1 g for milder or spicier heat."
+  },
+  {
+    "num": 19,
+    "name": "Blood Orange",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Deep crimson citrus with raspberry-like floral complexity and a squeeze of lemon for sparkle.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Berry-like citrus, vibrant, floral, tangy",
+    "ingredients": [
+      {
+        "name": "Fresh blood orange juice",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "Freshly squeezed and strained"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 5,
+        "unit": "g",
+        "approx": "approx. 1 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Blood oranges provide natural ruby pigment and distinct floral sweetness that pairs superbly with water kefir."
+  },
+  {
+    "num": 20,
+    "name": "Guava Lime",
+    "category": "Citrus & Tropical Flavors",
+    "cat_id": "citrus",
+    "desc": "Fragrant pink guava nectar brightened with fresh tart lime for an authentic island vacation sip.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Intensely fragrant, sweet guava nectar, tart lime punch",
+    "ingredients": [
+      {
+        "name": "Guava nectar or puree",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp",
+        "prep": "All-natural nectar or puree"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Look for 100% natural guava nectar without artificial preservatives that can inhibit yeast activity."
+  },
+  {
+    "num": 21,
+    "name": "Peach Lemonade",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Southern summer in a bottle: lush, dripping ripe peach flavor elevated by crisp tart lemonade.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Juicy sweet peach, crisp lemon, thirst-quenching",
+    "ingredients": [
+      {
+        "name": "Ripe peach",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Peeled and finely diced or pureed"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Gently mashing the peach with lemon juice before adding prevents peach oxidation and creates a uniform infusion."
+  },
+  {
+    "num": 22,
+    "name": "White Peach",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Delicate, low-acid floral peach profile showcasing pure, unadorned stone fruit elegance.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Floral, delicate, honeyed sweetness, smooth",
+    "ingredients": [
+      {
+        "name": "Fresh ripe white peach",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2.5 tbsp diced",
+        "prep": "Peeled and finely diced or gently mashed"
+      }
+    ],
+    "prep_tip": "White peaches are naturally sweeter and less acidic than yellow peaches, giving a delicate floral perfume."
+  },
+  {
+    "num": 23,
+    "name": "Watermelon Mint",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Cooling sweet watermelon juice paired with crushed spearmint leaves for the ultimate spa refresher.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Cooling, sweet melon, botanical spearmint, ultra-crisp",
+    "ingredients": [
+      {
+        "name": "Fresh watermelon flesh or juice",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp crushed",
+        "prep": "Fresh crushed seedless watermelon"
+      },
+      {
+        "name": "Fresh mint leaves",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 3\u20134 leaves",
+        "prep": "Lightly smacked between hands to release oils"
+      }
+    ],
+    "prep_tip": "Smack mint leaves gently rather than tearing finely to avoid bitter chlorophyll extraction."
+  },
+  {
+    "num": 24,
+    "name": "Pear Ginger",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Gentle, buttery autumn pear subtly accented with the warm spicy bite of freshly grated ginger.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Mellow sweet pear, subtle warmth, refined",
+    "ingredients": [
+      {
+        "name": "Ripe pear (Bartlett or Bosc)",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Peeled, cored, and finely grated or diced"
+      },
+      {
+        "name": "Fresh ginger root",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp grated",
+        "prep": "Peeled and finely grated"
+      }
+    ],
+    "prep_tip": "Grated pear releases luscious juice readily and lends a lovely champagne-like bouquet."
+  },
+  {
+    "num": 25,
+    "name": "Apple Pie",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Crisp sweet apple infused with cozy bakery cinnamon for sparkling holiday pie in a glass.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Sweet crisp apple, warming cinnamon spice, cozy finish",
+    "ingredients": [
+      {
+        "name": "Crisp sweet apple (Honeycrisp or Gala)",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced or grated"
+      },
+      {
+        "name": "Ground Ceylon cinnamon",
+        "amount": 0.3,
+        "unit": "g",
+        "approx": "approx. 1 pinch",
+        "prep": "Fine ground cinnamon (or 1 small cinnamon stick piece)"
+      }
+    ],
+    "prep_tip": "Use cinnamon sparingly: a tiny pinch is plenty to flavor 16 oz without creating murky sediment."
+  },
+  {
+    "num": 26,
+    "name": "Apple-Lemon-Ginger",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "The complete master guide recipe: crisp diced apple, warming grated ginger, and a bright splash of fresh lemon.",
+    "f2_time": "24\u201348 hours (1 to 2 days)",
+    "carb_speed": "Fast and reliable",
+    "taste_notes": "Crisp apple sweetness, fiery ginger warmth, zesty lemon lift",
+    "ingredients": [
+      {
+        "name": "Crisp apple (Fuji, Gala, Honeycrisp)",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced or grated"
+      },
+      {
+        "name": "Fresh ginger root",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp grated",
+        "prep": "Peeled and finely grated with a microplane"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp (or 1 small slice)",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "The gold standard water kefir blend! Grating the ginger and finely dicing the apple maximizes surface infusion."
+  },
+  {
+    "num": 27,
+    "name": "Apricot Vanilla",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Soft, honeyed apricot stone fruit rounded out with luxurious, aromatic vanilla bean sweetness.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Velvety stone fruit, floral honey, creamy vanilla",
+    "ingredients": [
+      {
+        "name": "Ripe apricot",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 1 medium apricot",
+        "prep": "Pitted and finely diced or pureed"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/4 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "If fresh apricots are out of season, unsulfured dried apricots finely diced and pre-soaked in warm water work wonderfully."
+  },
+  {
+    "num": 28,
+    "name": "Mango Strawberry",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Tropical velvet meets sweet summer garden berries in a vibrant, crowd-pleasing sunset blend.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Lush tropical fruit, sweet strawberry, vibrant ruby tint",
+    "ingredients": [
+      {
+        "name": "Ripe mango",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Fresh strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 berries",
+        "prep": "Finely diced"
+      }
+    ],
+    "prep_tip": "Both fruits produce generous carbonation. Leave a solid 1.5 to 2 inches of headspace in your swing-top bottle."
+  },
+  {
+    "num": 29,
+    "name": "Plum Lime",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Deep sweet-tart dark plum skin and flesh balanced with a crisp, invigorating squeeze of fresh lime.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Rich stone fruit, winey tartness, sharp citrus accent",
+    "ingredients": [
+      {
+        "name": "Sweet red or black plum",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced with skin on (for rich color)"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Keep the plum peel on when dicing \u2014 plum skins impart gorgeous violet color and pleasant gentle tannins."
+  },
+  {
+    "num": 30,
+    "name": "Pomegranate Orange",
+    "category": "Sweet, Juicy Fruit Flavors",
+    "cat_id": "sweet",
+    "desc": "Festive ruby blend featuring tannic, tart pomegranate juice softened by sweet Valencia orange juice.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Tart, tannic depth, citrus brightness, sparkling jewel tone",
+    "ingredients": [
+      {
+        "name": "100% pure pomegranate juice",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4 tsp",
+        "prep": "Unsweetened pure pomegranate juice"
+      },
+      {
+        "name": "Fresh orange juice",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 tbsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Juices create clear, sediment-free carbonated water kefir that pours with a beautiful champagne sparkle."
+  },
+  {
+    "num": 31,
+    "name": "Cucumber Lime",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Crisp, cooling English cucumber with tart fresh lime for an ultra-clean, revitalizing mocktail.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Ultra-crisp, cooling, zesty, clean hydration",
+    "ingredients": [
+      {
+        "name": "English cucumber",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 3\u20134 thin cucumber ribbons or diced",
+        "prep": "Finely diced or thinly ribboned"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Use English or Persian seedless cucumbers with skin on for fresh aroma and vibrant green tint."
+  },
+  {
+    "num": 32,
+    "name": "Lemon Mint",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Classic Mediterranean refresher combining sunny lemon juice with aromatic spearmint leaves.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Bright citrus, cooling menthol herbs, thirst-quenching",
+    "ingredients": [
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Fresh mint leaves",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 4\u20135 leaves",
+        "prep": "Lightly bruised to release aromatic menthol oils"
+      }
+    ],
+    "prep_tip": "Smack the mint leaves between your palms before adding to open the oil glands without making the drink grassy."
+  },
+  {
+    "num": 33,
+    "name": "Blueberry Basil",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Plump dark blueberries balanced by sweet Genovese basil for an artisanal culinary soda.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Earthy berry sweetness, sweet anise-basil aromatics",
+    "ingredients": [
+      {
+        "name": "Fresh blueberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 15 berries",
+        "prep": "Crushed to expose juice and skins"
+      },
+      {
+        "name": "Fresh sweet basil leaves",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 2\u20133 leaves",
+        "prep": "Gently torn"
+      }
+    ],
+    "prep_tip": "Basil and blueberry create a deep gourmet profile; strain after chilling to keep the basil flavor crisp and fresh."
+  },
+  {
+    "num": 34,
+    "name": "Strawberry Basil",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Ripe red strawberries entwined with fragrant sweet basil for a modern Italian trattoria-inspired drink.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Sweet red berries, herbal pepper-clove notes, aromatic",
+    "ingredients": [
+      {
+        "name": "Fresh strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 berries",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Fresh sweet basil",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 2\u20133 medium leaves",
+        "prep": "Lightly torn"
+      }
+    ],
+    "prep_tip": "Strawberries provide quick carbonation sugars while basil lends high-end botanical complexity."
+  },
+  {
+    "num": 35,
+    "name": "Ginger Lime",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Ginger-forward and zesty, echoing an authentic Moscow Mule or craft Jamaican ginger brew.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Pungent ginger heat, sour lime tang, crisp soda fizz",
+    "ingredients": [
+      {
+        "name": "Fresh ginger root",
+        "amount": 4,
+        "unit": "g",
+        "approx": "approx. 3/4 tsp finely grated",
+        "prep": "Peeled and finely grated with a microplane"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Grated ginger extracts intensely into the kefir. Pour through a fine mesh strainer when serving for a smooth sip."
+  },
+  {
+    "num": 36,
+    "name": "Lemon Lavender",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Delicate Provence-style floral drink with sunny lemon juice and whisper-soft culinary lavender buds.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Floral perfume, gentle tart citrus, relaxing, elegant",
+    "ingredients": [
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Culinary dried lavender buds",
+        "amount": 0.2,
+        "unit": "g",
+        "approx": "approx. 10\u201312 dried buds (tiny pinch)",
+        "prep": "Food-grade culinary English lavender only"
+      }
+    ],
+    "prep_tip": "Use lavender with extreme restraint (just 0.2g / a pinch)! Too much can turn medicinal, but a hint is heavenly."
+  },
+  {
+    "num": 37,
+    "name": "Cucumber Melon",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Mild, mellow, and exceptionally hydrating: juicy honeydew melon blended with crisp cucumber.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Subtle honey-melon sweetness, crisp garden cucumber, smooth",
+    "ingredients": [
+      {
+        "name": "Fresh cucumber",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 1 tbsp finely diced",
+        "prep": "Finely diced or juiced"
+      },
+      {
+        "name": "Ripe honeydew melon",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced or pureed"
+      }
+    ],
+    "prep_tip": "Honeydew provides gentle natural fructose that creates silky, soft micro-bubbles."
+  },
+  {
+    "num": 38,
+    "name": "Pineapple Mint",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Sunny tropical pineapple sweetness lifted with cooling fresh mint leaves for an island breeze mocktail.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Sweet pineapple, cooling menthol, crisp tropical finish",
+    "ingredients": [
+      {
+        "name": "Fresh pineapple",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Fresh mint leaves",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 3\u20134 leaves",
+        "prep": "Lightly bruised"
+      }
+    ],
+    "prep_tip": "Pineapple ferments briskly. Check the swing-top bottle daily to gauge carbonation buildup."
+  },
+  {
+    "num": 39,
+    "name": "Orange Ginger",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Rich freshly squeezed orange juice grounded by the pleasant, spicy warmth of fresh ginger.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Citrus punch, fiery ginger warmth, golden hue",
+    "ingredients": [
+      {
+        "name": "Fresh orange juice",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Fresh ginger root",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp grated",
+        "prep": "Peeled and finely grated"
+      }
+    ],
+    "prep_tip": "A beloved winter and morning tonic: sweet citrus eases the ginger bite into a warming harmony."
+  },
+  {
+    "num": 40,
+    "name": "Hibiscus Berry",
+    "category": "Refreshing & Herbal Flavors",
+    "cat_id": "herbal",
+    "desc": "Deep crimson infusion of steeped tart hibiscus petals paired with juicy muddled raspberries.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Cranberry-like tartness, floral botanicals, juicy berry finish",
+    "ingredients": [
+      {
+        "name": "Strong brewed hibiscus tea (cooled)",
+        "amount": 30,
+        "unit": "g",
+        "approx": "approx. 2 tbsp",
+        "prep": "Steep 1 tsp dried hibiscus in hot water, cool completely"
+      },
+      {
+        "name": "Fresh or frozen raspberries",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 5 berries",
+        "prep": "Crushed with a fork"
+      }
+    ],
+    "prep_tip": "Brew the hibiscus tea extra strong and make sure it has cooled to room temperature before adding to the kefir bottle."
+  },
+  {
+    "num": 41,
+    "name": "Vanilla Cream Soda",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Old-fashioned parlor soda with deep vanilla aromatics, light caramel warmth, and velvety effervescence.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium (steady from cane sugar)",
+    "taste_notes": "Warm vanilla marshmallow, buttery sweetness, classic soda",
+    "ingredients": [
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "High-quality bourbon or Madagascar vanilla"
+      },
+      {
+        "name": "Organic cane or turbinado sugar",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Granulated cane sugar"
+      }
+    ],
+    "prep_tip": "Because extract has no natural fruit sugar, the 3g cane sugar provides the yeast with necessary food to build pressure."
+  },
+  {
+    "num": 42,
+    "name": "Strawberry Shortcake",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Mashed sweet strawberries with smooth vanilla extract evoke fresh strawberries piled high over vanilla sponge cake.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Ripe berry sweetness, creamy cake-like vanilla finish",
+    "ingredients": [
+      {
+        "name": "Fresh strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 medium berries",
+        "prep": "Finely mashed with a fork"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "Mashing the strawberries into a soft pulp releases both juice and natural pectin for a rich, rounded mouthfeel."
+  },
+  {
+    "num": 43,
+    "name": "Blueberry Muffin",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Baked-goods bliss: crushed ripe blueberries with sweet vanilla and a gentle whisper of warming cinnamon.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Sweet cooked berry, bakery spice, cozy vanilla cake",
+    "ingredients": [
+      {
+        "name": "Blueberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 15 berries",
+        "prep": "Crushed with a fork"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/4 tsp",
+        "prep": "Pure vanilla extract"
+      },
+      {
+        "name": "Ground cinnamon",
+        "amount": 0.2,
+        "unit": "g",
+        "approx": "approx. 1 small pinch",
+        "prep": "Ground Ceylon cinnamon"
+      }
+    ],
+    "prep_tip": "A tiny pinch of cinnamon goes a long way. Swirl bottle gently when bottling to distribute spices."
+  },
+  {
+    "num": 44,
+    "name": "Peach Cobbler",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Sweet summer peaches paired with warming cinnamon and vanilla evoke hot cobbler straight from the oven.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Caramelized stone fruit, warm cinnamon crust, vanilla glaze",
+    "ingredients": [
+      {
+        "name": "Ripe peach",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Peeled and finely diced"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/4 tsp",
+        "prep": "Pure vanilla extract"
+      },
+      {
+        "name": "Ground cinnamon",
+        "amount": 0.2,
+        "unit": "g",
+        "approx": "approx. 1 small pinch",
+        "prep": "Ground cinnamon"
+      }
+    ],
+    "prep_tip": "Dice peach very small so it fits easily through the swing-top bottle neck and infuses smoothly."
+  },
+  {
+    "num": 45,
+    "name": "Cherry Vanilla",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Decadent dark cherries combined with velvety vanilla extract for a gourmet artisanal soda sensation.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Lush black cherry, creamy bourbon vanilla, deep burgundy tone",
+    "ingredients": [
+      {
+        "name": "Sweet dark cherries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 3\u20134 cherries",
+        "prep": "Pitted and finely diced or muddled"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "Frozen dark sweet cherries work wonderfully when thawed, giving generous deep ruby juice."
+  },
+  {
+    "num": 46,
+    "name": "Lemon Sugar Cookie",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Fragrant lemon zest oils paired with sweet vanilla and cane sugar for a sparkling iced lemon pastry profile.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Bright candied lemon peel, buttery vanilla dough, sweet glaze",
+    "ingredients": [
+      {
+        "name": "Fresh organic lemon zest",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp zest",
+        "prep": "Finely grated yellow outer peel only (no bitter white pith)"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure vanilla extract"
+      },
+      {
+        "name": "Organic cane sugar",
+        "amount": 2,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Fine cane sugar"
+      }
+    ],
+    "prep_tip": "Grate only the bright yellow outer rind of the lemon where the essential oils reside; avoid white pith."
+  },
+  {
+    "num": 47,
+    "name": "Pineapple Upside-Down Cake",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Caramelized tropical pineapple aroma paired with sweet cake-like vanilla for an unforgettable retro treat.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Brown-sugar pineapple, luscious vanilla, bright fizz",
+    "ingredients": [
+      {
+        "name": "Fresh pineapple",
+        "amount": 25,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "Pineapple and vanilla harmonize beautifully, softening pineapple's acidity into a cake-like profile."
+  },
+  {
+    "num": 48,
+    "name": "Apple Cinnamon Roll",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Sweet grated apple, fragrant cinnamon spice, and velvety vanilla evoke frosted cinnamon pastries.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Spiced apple, warm cinnamon sugar, creamy vanilla frosting aroma",
+    "ingredients": [
+      {
+        "name": "Crisp sweet apple",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 2 tbsp diced/grated",
+        "prep": "Finely diced or grated"
+      },
+      {
+        "name": "Ground cinnamon",
+        "amount": 0.3,
+        "unit": "g",
+        "approx": "approx. 1 pinch",
+        "prep": "Ground cinnamon"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/4 tsp",
+        "prep": "Pure vanilla extract"
+      }
+    ],
+    "prep_tip": "Grate the apple on a box grater so fine apple shreds infuse and dance throughout the effervescence."
+  },
+  {
+    "num": 49,
+    "name": "Chocolate Orange-Inspired",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "European holiday confection inspiration: vibrant orange zest aromatics with a hint of dark cocoa richness.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Fragrant orange oils, subtle dark chocolate bitterness, dry finish",
+    "ingredients": [
+      {
+        "name": "Fresh orange zest",
+        "amount": 1.5,
+        "unit": "g",
+        "approx": "approx. 3/4 tsp zest",
+        "prep": "Finely grated orange rind (no white pith)"
+      },
+      {
+        "name": "Unsweetened cocoa powder (or cracked cacao nibs)",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/3 tsp",
+        "prep": "Whisked with 1 tbsp plain kefir before bottling to prevent clumping"
+      }
+    ],
+    "prep_tip": "Slurry the cocoa powder in a small dish with 1 tablespoon of kefir before pouring into the bottle to ensure smooth blending."
+  },
+  {
+    "num": 50,
+    "name": "Banana Bread-Inspired",
+    "category": "Dessert-Inspired Flavors",
+    "cat_id": "dessert",
+    "desc": "Ripe mashed banana with sweet vanilla and warm cinnamon captures fresh bakery banana loaf.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Fast (banana sugars ferment quickly)",
+    "taste_notes": "Sweet banana aroma, bakery spice, smooth effervescence",
+    "ingredients": [
+      {
+        "name": "Ripe spotted banana",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp mashed",
+        "prep": "Peeled and thoroughly pureed or mashed smooth"
+      },
+      {
+        "name": "Pure vanilla extract",
+        "amount": 1,
+        "unit": "g",
+        "approx": "approx. 1/4 tsp",
+        "prep": "Pure vanilla extract"
+      },
+      {
+        "name": "Ground cinnamon",
+        "amount": 0.3,
+        "unit": "g",
+        "approx": "approx. 1 pinch",
+        "prep": "Ground cinnamon"
+      }
+    ],
+    "prep_tip": "Banana ferments rapidly and clouds liquid. Strain thoroughly through a fine mesh strainer when serving."
+  },
+  {
+    "num": 51,
+    "name": "Shirley Temple-Inspired",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Beloved retro mocktail: sweet orange juice and muddled dark cherries with a tart touch of lemon.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Sparkling pomegranate-cherry sweetness, orange zestiness",
+    "ingredients": [
+      {
+        "name": "Fresh orange juice",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Dark cherries or pure cherry juice",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 tbsp",
+        "prep": "Muddled cherries or pure tart/sweet cherry juice"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Gives a gorgeous sparkling sunset-red hue and crisp, nostalgic carbonation."
+  },
+  {
+    "num": 52,
+    "name": "Lemon-Lime Soda",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "The definitive natural Sprite/7-Up alternative: crisp fresh lemon and lime juices naturally effervescent.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium (steady)",
+    "taste_notes": "Ultra-clean, crisp, electric citrus, sharp bubble bite",
+    "ingredients": [
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed and strained"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed and strained"
+      }
+    ],
+    "prep_tip": "For a sweeter mainstream soda flavor, add 2 g (approx. 1/2 tsp) cane sugar along with the juices."
+  },
+  {
+    "num": 53,
+    "name": "Cream Soda-Inspired",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Creamy classic fountain soda with aromatic vanilla extract lifted by a touch of fresh lemon juice.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Velvety vanilla cream, soft caramel sweetness, light citrus lift",
+    "ingredients": [
+      {
+        "name": "Pure vanilla extract",
+        "amount": 2,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Pure Madagascar vanilla extract"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 5,
+        "unit": "g",
+        "approx": "approx. 1 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Organic cane sugar",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Granulated cane sugar"
+      }
+    ],
+    "prep_tip": "The lemon juice is key: just 5g balances the rich vanilla and keeps the cream soda bright and bubbly."
+  },
+  {
+    "num": 54,
+    "name": "Tropical Punch",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Lively island party punch combining pineapple, sweet orange juice, and fragrant pink guava.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Juicy tropical punch, vibrant citrus, exotic guava perfume",
+    "ingredients": [
+      {
+        "name": "Fresh pineapple",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 tbsp finely diced",
+        "prep": "Finely diced"
+      },
+      {
+        "name": "Fresh orange juice",
+        "amount": 15,
+        "unit": "g",
+        "approx": "approx. 1 tbsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Guava nectar",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Pure guava nectar or puree"
+      }
+    ],
+    "prep_tip": "Stir the orange juice and guava together and pour over diced pineapple for maximum tropical synergy."
+  },
+  {
+    "num": 55,
+    "name": "Pink Lemonade",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Fairground favorite: mouth-watering fresh lemon juice tinted rosy pink with sweet strawberry puree.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Tangy lemonade, sweet strawberry blush, sparkling crispness",
+    "ingredients": [
+      {
+        "name": "Fresh lemon juice",
+        "amount": 12,
+        "unit": "g",
+        "approx": "approx. 2.5 tsp",
+        "prep": "Freshly squeezed and strained"
+      },
+      {
+        "name": "Fresh strawberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 berries",
+        "prep": "Pureed or mashed into a smooth pulp"
+      }
+    ],
+    "prep_tip": "Pureeing the strawberries colors the entire bottle a radiant translucent pink with lively effervescence."
+  },
+  {
+    "num": 56,
+    "name": "Ginger Beer-Inspired",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Bold, fiery, and deeply refreshing craft Jamaican-style ginger beer with spicy ginger heat and tart lime.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium-Fast",
+    "taste_notes": "Intense spicy throat warmth, zesty lime, bold carbonation bite",
+    "ingredients": [
+      {
+        "name": "Fresh ginger root",
+        "amount": 5,
+        "unit": "g",
+        "approx": "approx. 1 full tsp finely grated",
+        "prep": "Peeled and finely grated with a microplane (or fresh ginger juice)"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Demerara or turbinado sugar",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Raw cane sugar for caramel body"
+      }
+    ],
+    "prep_tip": "For authentic fiery ginger kick, use the full 5g of freshly grated root. Strain through fine mesh before serving."
+  },
+  {
+    "num": 57,
+    "name": "Grape Soda-Inspired",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Deep purple, richly aromatic, and sparkling: nostalgic Concord grape soda made naturally healthy.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast (grape juice ferments actively)",
+    "taste_notes": "Deep Concord grape jammy sweetness, crisp natural bubbles",
+    "ingredients": [
+      {
+        "name": "100% pure Concord grape juice",
+        "amount": 35,
+        "unit": "g",
+        "approx": "approx. 2.5 tbsp",
+        "prep": "100% juice (no added preservatives or sulfites)"
+      }
+    ],
+    "prep_tip": "Use pure pasteurized Concord grape juice without potassium sorbate or sodium benzoate, which stop fermentation."
+  },
+  {
+    "num": 58,
+    "name": "Cranberry Lime",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Sophisticated sparkling Cape Codder: puckery unsweetened cranberry juice balanced by lime and raw sugar.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Medium",
+    "taste_notes": "Dry, tannic cranberry tartness, zesty lime, crisp palate cleanser",
+    "ingredients": [
+      {
+        "name": "100% pure unsweetened cranberry juice",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4 tsp",
+        "prep": "Pure tart cranberry juice (not cocktail blend)"
+      },
+      {
+        "name": "Fresh lime juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Organic cane sugar",
+        "amount": 3,
+        "unit": "g",
+        "approx": "approx. 1/2 tsp",
+        "prep": "Granulated cane sugar to balance tart acids"
+      }
+    ],
+    "prep_tip": "Pure cranberry juice is naturally dry and high acid. The 3g cane sugar provides fuel for yeast to carbonate."
+  },
+  {
+    "num": 59,
+    "name": "Orange Pineapple Soda",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "Golden retro sunshine fizz blending bright sweet orange juice with luscious tropical pineapple.",
+    "f2_time": "24\u201348 hours",
+    "carb_speed": "Fast",
+    "taste_notes": "Sweet tropical sunshine, sunny citrus zest, lively bubbles",
+    "ingredients": [
+      {
+        "name": "Fresh orange juice",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 4 tsp",
+        "prep": "Freshly squeezed"
+      },
+      {
+        "name": "Fresh pineapple",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 1.5 tbsp diced",
+        "prep": "Finely diced or crushed"
+      }
+    ],
+    "prep_tip": "A crowd-pleasing family favorite that carbonates reliably and tastes like a tropical orange soda."
+  },
+  {
+    "num": 60,
+    "name": "Raspberry Lemonade",
+    "category": "Soda & Specialty-Inspired Flavors",
+    "cat_id": "soda",
+    "desc": "The grand finale: electric tart raspberries and crisp fresh lemon juice for an irresistible sparkling cooler.",
+    "f2_time": "24\u201336 hours",
+    "carb_speed": "Very Fast",
+    "taste_notes": "Bold raspberry tartness, bright lemon snap, gorgeous ruby sparkle",
+    "ingredients": [
+      {
+        "name": "Fresh or frozen raspberries",
+        "amount": 20,
+        "unit": "g",
+        "approx": "approx. 6\u20138 berries",
+        "prep": "Crushed lightly with a fork"
+      },
+      {
+        "name": "Fresh lemon juice",
+        "amount": 10,
+        "unit": "g",
+        "approx": "approx. 2 tsp",
+        "prep": "Freshly squeezed"
+      }
+    ],
+    "prep_tip": "Raspberries provide vibrant color and quick carbonation. Chill thoroughly before opening for crisp, clean effervescence."
+  }
+];
+
+let activeIndex = 0;
+
+// DOM Elements
+const recipeSelect = document.getElementById('recipeSelect');
+const recipeSearch = document.getElementById('recipeSearch');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const randomBtn = document.getElementById('randomBtn');
+const recipeCounter = document.getElementById('recipeCounter');
+
+// Part 2 Elements
+const recipeCatTag = document.getElementById('recipeCatTag');
+const recipeSpeedTag = document.getElementById('recipeSpeedTag');
+const recipeTitle = document.getElementById('recipeTitle');
+const recipeDesc = document.getElementById('recipeDesc');
+const flavorIngredients = document.getElementById('flavorIngredients');
+const recipeSteps = document.getElementById('recipeSteps');
+const recipeTipText = document.getElementById('recipeTipText');
+const flavorListGrid = document.getElementById('flavorListGrid');
+
+function populateSelect(filter = '') {
+  const currentVal = Number(recipeSelect.value || activeIndex);
+  recipeSelect.innerHTML = '';
+  
+  const groups = {};
+  recipes.forEach((r, idx) => {
+    const textTarget = (r.name + ' ' + r.desc + ' ' + r.category + ' ' + r.ingredients.map(i => i.name).join(' ')).toLowerCase();
+    if (!filter || textTarget.includes(filter.toLowerCase().trim())) {
+      if (!groups[r.category]) groups[r.category] = [];
+      groups[r.category].push({ recipe: r, index: idx });
+    }
+  });
+
+  let count = 0;
+  let firstIdx = null;
+
+  for (const [catName, items] of Object.entries(groups)) {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = catName;
+    items.forEach(item => {
+      count++;
+      if (firstIdx === null) firstIdx = item.index;
+      const opt = document.createElement('option');
+      opt.value = item.index;
+      opt.textContent = item.recipe.num + '. ' + item.recipe.name;
+      if (item.index === activeIndex) opt.selected = true;
+      optgroup.appendChild(opt);
+    });
+    recipeSelect.appendChild(optgroup);
+  }
+
+  if (count === 0) {
+    const opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = 'No matching recipes found';
+    recipeSelect.appendChild(opt);
+  } else {
+    const hasCurrent = Array.from(recipeSelect.options).some(o => Number(o.value) === activeIndex);
+    if (!hasCurrent && firstIdx !== null) {
+      loadRecipe(firstIdx, false);
+    }
+  }
+
+  recipeCounter.textContent = 'Showing recipe ' + recipes[activeIndex].num + ' of 60 (' + count + ' visible)';
+}
+
+function renderFlavorGrid() {
+  flavorListGrid.innerHTML = '';
+  const filter = (recipeSearch.value || '').toLowerCase().trim();
+
+  recipes.forEach((r, idx) => {
+    const textTarget = (r.name + ' ' + r.desc + ' ' + r.category + ' ' + r.ingredients.map(i => i.name).join(' ')).toLowerCase();
+    if (filter && !textTarget.includes(filter)) return;
+
+    const div = document.createElement('div');
+    div.className = 'flavor-item' + (idx === activeIndex ? ' active' : '');
+    div.dataset.index = idx;
+
+    const ingSummary = r.ingredients.map(i => i.name.split(' (')[0] + ' (' + i.amount + i.unit + ')').join(' + ');
+
+    div.innerHTML = '<div>' +
+      '<div class="flavor-num">Recipe ' + r.num + ' &middot; ' + r.category.split(' ')[0] + '</div>' +
+      '<div class="flavor-name">' + r.name + '</div>' +
+      '</div>' +
+      '<div class="flavor-ings">' + ingSummary + '</div>';
+
+    div.addEventListener('click', () => {
+      loadRecipe(idx);
+      document.getElementById('part2Section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    flavorListGrid.appendChild(div);
+  });
+}
+
+function updateGridActive() {
+  const items = flavorListGrid.querySelectorAll('.flavor-item');
+  items.forEach(item => {
+    const idx = Number(item.dataset.index);
+    if (idx === activeIndex) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+function loadRecipe(index, updateSelect = true) {
+  if (index < 0) index = 0;
+  if (index >= recipes.length) index = recipes.length - 1;
+  activeIndex = index;
+  const r = recipes[activeIndex];
+
+  recipeCatTag.textContent = r.category;
+  recipeSpeedTag.textContent = 'Carbonation: ' + r.carb_speed;
+  recipeTitle.textContent = r.name + ' Water Kefir';
+  recipeDesc.textContent = r.desc + ' Taste profile: ' + r.taste_notes + '.';
+
+  // Ingredients
+  flavorIngredients.innerHTML = '';
+  r.ingredients.forEach(ing => {
+    const card = document.createElement('div');
+    card.className = 'ingredient';
+    card.innerHTML = '<div class="ingredient-label">' + ing.name + '</div>' +
+      '<div class="amount-display">' +
+      '<span class="amount-val">' + ing.amount + '</span>' +
+      '<span class="unit">' + ing.unit + '</span>' +
+      '</div>' +
+      '<div class="approx">' + ing.approx + '</div>' +
+      '<div class="prep-note"><strong>Prep:</strong> ' + ing.prep + '</div>';
+    flavorIngredients.appendChild(card);
+  });
+
+  // Steps
+  const ingListText = r.ingredients.map(i => '<strong>' + i.amount + ' ' + i.unit + '</strong> of ' + i.name.toLowerCase() + ' (' + i.prep.toLowerCase() + ')').join(' and ');
+
+  recipeSteps.innerHTML = '<li><strong>Strain the grains:</strong> Strain the grains from the first fermentation jar using your plastic or nylon strainer and set them aside in a clean bowl for your next batch.</li>' +
+    '<li><strong>Tare the bottle:</strong> Place your clean 16-oz pressure-rated swing-top glass bottle directly on your digital kitchen scale and tare (zero) it.</li>' +
+    '<li><strong>Add flavor ingredients:</strong> Add exactly ' + ingListText + ' directly into the bottle (use a small clean funnel if needed).</li>' +
+    '<li><strong>Add plain water kefir:</strong> Pour <strong>~300 grams (about 1.25 cups)</strong> of the strained plain water kefir into the bottle. Crucial: leave about <strong>1 to 2 inches of headspace</strong> at the top so the bottle does not over-pressurize.</li>' +
+    '<li><strong>Seal and ferment:</strong> Close the swing-top bottle tightly and let it ferment at room temperature for <strong>' + r.f2_time + '</strong>.</li>' +
+    '<li><strong>Burp daily:</strong> Briefly unlatch the bottle once a day over a sink to check carbonation and safely vent excess pressure.</li>' +
+    '<li><strong>Chill thoroughly and enjoy:</strong> When carbonated, chill the bottle in the refrigerator for at least 4 to 6 hours before opening. Pour through a fine mesh strainer into your glass to catch fruit solids, and enjoy!</li>';
+
+  recipeTipText.textContent = r.prep_tip;
+
+  if (updateSelect && recipeSelect.value !== String(activeIndex)) {
+    recipeSelect.value = String(activeIndex);
+  }
+
+  recipeCounter.textContent = 'Showing recipe ' + r.num + ' of 60';
+  updateGridActive();
+}
+
+recipeSelect.addEventListener('change', () => {
+  loadRecipe(Number(recipeSelect.value));
+});
+
+recipeSearch.addEventListener('input', () => {
+  populateSelect(recipeSearch.value);
+  renderFlavorGrid();
+});
+
+prevBtn.addEventListener('click', () => {
+  const newIdx = activeIndex > 0 ? activeIndex - 1 : recipes.length - 1;
+  loadRecipe(newIdx);
+});
+
+nextBtn.addEventListener('click', () => {
+  const newIdx = activeIndex < recipes.length - 1 ? activeIndex + 1 : 0;
+  loadRecipe(newIdx);
+});
+
+randomBtn.addEventListener('click', () => {
+  const randIdx = Math.floor(Math.random() * recipes.length);
+  loadRecipe(randIdx);
+});
+
+// Arrow key navigation
+document.addEventListener('keydown', (e) => {
+  if (document.activeElement === recipeSearch) return;
+  if (e.key === 'ArrowLeft') prevBtn.click();
+  if (e.key === 'ArrowRight') nextBtn.click();
+});
+
+// Init
+populateSelect();
+renderFlavorGrid();
+loadRecipe(0);
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a48c767fde926e62',t:'MTc5MTcwNzAwNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
